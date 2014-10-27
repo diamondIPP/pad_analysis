@@ -5,6 +5,7 @@ import os
 from array import *
 import ROOT
 import argparse
+ROOT.gROOT.SetBatch()
 parser = argparse.ArgumentParser(description='Process pad_run.')
 parser.add_argument('filename',type = str, help='filename')
 
