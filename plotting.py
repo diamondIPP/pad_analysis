@@ -26,9 +26,10 @@ tree = f.Get('rec')
 if not tree:
     raise Exception('Cannot open tree')
 histos = {}
-t_min = int(tree.GetMinimum('timestamp')/1000)*1000
-t_max = (int(tree.GetMaximum('timestamp')/1000)+1)*1000
-t_bins = int((t_max - t_min)/ 1e3)
+t_min = (int(tree.GetMinimum('timestamp')/1000)*1000)
+t_max = ((int(tree.GetMaximum('timestamp')/1000)+1)*1000)
+print t_min,t_max
+t_bins = int((t_max - t_min)/1000)
 s_min = -30.
 s_max = 30.
 s_bins = int((s_max - s_min))*8
@@ -39,7 +40,12 @@ def set_time_fmt(histo):
     histo.GetXaxis().SetNdivisions(1005)
 
 name = 'h_timing'
-histo = ROOT.TH1F(name,name,t_bins*100,t_min,t_max)
+t_bins = int(t_bins)
+t_min = float(t_min)
+t_max = float(t_max)
+if t_bins > 1000:
+    t_bins = 1000
+histo = ROOT.TH1F(name,name,int(t_bins*100),float(t_min),float(t_max) )
 set_time_fmt(histo)
 histos[name] = {'h':histo, 'y':'number of entries', 'x':'time stamp','o':'colz'}
 tree.Draw('timestamp>>%s'%name,'!calibflag','goff')
@@ -61,7 +67,7 @@ print y
 t_array = array('d',x)
 
 name = 'h_timing_calib'
-histo = ROOT.TH1F(name,name,t_bins*100,t_min,t_max)
+histo = ROOT.TH1F(name,name,t_bins*100,float(t_min),float(t_max))
 set_time_fmt(histo)
 histos[name] = {'h':histo, 'y':'number of entries', 'x':'time stamp','o':'','xx':'time'}
 set_time_fmt(histos[name]['h'])
